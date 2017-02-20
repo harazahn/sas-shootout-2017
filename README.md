@@ -1,5 +1,5 @@
 # sas-shootout-2017
-Final project for STA 6704 (Data Mining II) :fire:
+Final project for STA 6704 (Data Mining II)
 
 ## Data
 [SAS Shootout 2017 Data](http://www.sas.com/events/analytics/us/2017-analytics-shootout-data-package.zip)
