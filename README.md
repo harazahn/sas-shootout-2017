@@ -1,6 +1,29 @@
 # sas-shootout-2017
 Final project for STA 6704 (Data Mining II)
 
+## Data
+[SAS Shootout 2017 Data](http://www.sas.com/events/analytics/us/2017-analytics-shootout-data-package.zip)
+
+Contains the following files:
+
+Name | Size
+---- | -----
+drought_severity.sas7bdat | 209 MB
+drought_severity_scoring.sas7bdat | 21.8 MB
+LandCover_by_County.csv | 236 KB
+NOAA_Zones_to_Counties.csv | 351 KB
+population_by_county_2001_2009.csv | 328 KB
+population_by_county_2010_2015.csv | 268 KB
+Shootout 2017 Data Dictionary.pdf | 320 KB
+Shootout 2017 Problem Statement.pdf | 640 KB
+storm_events.sas7bdat | 236 MB
+storm_events_scoring.sas7bdat | 15.1 MB
+US_weather_stations_counties.csv | 2.87 MB
+weather_station_data.sas7bdat | 4.12 GB
+weather_station_scoring.sas7bdat | 317 MB
+wildfire_events.sas7bdat | 1.43 MB
+wildfire_narrative.sas7bdat | 113 MB
+
 ## Modeling Tasks
 
 ### Wildfire Conditions
