@@ -13,7 +13,9 @@ Start with basic logistic regression and go from there.
 Produce a model that will predict the probability of potential causes of a wildfire by time and geography.
 
 **Classification**
+
 **Clustering?**
+
 **NLP**
 
 Will have to parse "Wildfire Narratives" file.
@@ -25,6 +27,7 @@ Are any fires labeled by cause? Will have to check wildfire_events and wildfire_
 Build a model that predicts acres burned from the provided variables.
 
 **Regression**
+
 **NLP**
 
 Based on cause, geography, weather before & after ignition, etc.
