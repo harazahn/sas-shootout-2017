@@ -1,0 +1,40 @@
+PROC SQL;
+   CREATE TABLE WORK.LANDCOVER_01 AS
+   SELECT t1.STATE_NAME,
+          t1.STATE_ID,
+          t1.ST_CO_ID FORMAT=Z5.,
+          t1.County,
+          /* OPEN_WATER */
+            (INPUT(SUBSTR(t1.'11'n, 1, LENGTH(t1.'11'n) - 1), BEST3.) / 100) FORMAT=PERCENT6. AS OPEN_WATER,
+          /* ICE_SNOW */
+            (INPUT(SUBSTR(t1.'12'n, 1, LENGTH(t1.'12'n) - 1), BEST3.) / 100) FORMAT=PERCENT6. AS ICE_SNOW,
+          /* DEVELOPED_OPEN */
+            (INPUT(SUBSTR(t1.'21'n, 1, LENGTH(t1.'21'n) - 1), BEST3.) / 100) FORMAT=PERCENT6. AS DEVELOPED_OPEN,
+          /* DEVELOPED_LOW */
+            (INPUT(SUBSTR(t1.'22'n, 1, LENGTH(t1.'22'n) - 1), BEST3.) / 100) FORMAT=PERCENT6. AS DEVELOPED_LOW,
+          /* DEVELOPED_MED */
+            (INPUT(SUBSTR(t1.'23'n, 1, LENGTH(t1.'23'n) - 1), BEST3.) / 100) FORMAT=PERCENT6. AS DEVELOPED_MED,
+          /* DEVELOPED_HIGH */
+            (INPUT(SUBSTR(t1.'24'n, 1, LENGTH(t1.'24'n) - 1), BEST3.) / 100) FORMAT=PERCENT6. AS DEVELOPED_HIGH,
+          /* BARREN */
+            (INPUT(SUBSTR(t1.'31'n, 1, LENGTH(t1.'31'n) - 1), BEST3.) / 100) FORMAT=PERCENT6. AS BARREN,
+          /* DECIDUOUS */
+            (INPUT(SUBSTR(t1.'41'n, 1, LENGTH(t1.'41'n) - 1), BEST3.) / 100) FORMAT=PERCENT6. AS DECIDUOUS,
+          /* EVERGREEN */
+            (INPUT(SUBSTR(t1.'42'n, 1, LENGTH(t1.'42'n) - 1), BEST3.) / 100) FORMAT=PERCENT6. AS EVERGREEN,
+          /* MIXED */
+            (INPUT(SUBSTR(t1.'43'n, 1, LENGTH(t1.'43'n) - 1), BEST3.) / 100) FORMAT=PERCENT6. AS MIXED,
+          /* SHRUB */
+            (INPUT(SUBSTR(t1.'52'n, 1, LENGTH(t1.'52'n) - 1), BEST3.) / 100) FORMAT=PERCENT6. AS SHRUB,
+          /* GRASSLAND */
+            (INPUT(SUBSTR(t1.'71'n, 1, LENGTH(t1.'71'n) - 1), BEST3.) / 100) FORMAT=PERCENT6. AS GRASSLAND,
+          /* PASTURE */
+            (INPUT(SUBSTR(t1.'81'n, 1, LENGTH(t1.'81'n) - 1), BEST3.) / 100) FORMAT=PERCENT6. AS PASTURE,
+          /* CROPS */
+            (INPUT(SUBSTR(t1.'82'n, 1, LENGTH(t1.'82'n) - 1), BEST3.) / 100) FORMAT=PERCENT6. AS CROPS,
+          /* WOODY_WETLAND */
+            (INPUT(SUBSTR(t1.'90'n, 1, LENGTH(t1.'90'n) - 1), BEST3.) / 100) FORMAT=PERCENT6. AS WOODY_WETLAND,
+          /* HERB_WETLAND */
+            (INPUT(SUBSTR(t1.'95'n, 1, LENGTH(t1.'95'n) - 1), BEST3.) / 100) FORMAT=PERCENT6. AS HERB_WETLAND
+      FROM WORK.LANDCOVER_BY_COUNTY t1;
+QUIT;

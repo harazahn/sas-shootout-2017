@@ -1,0 +1,70 @@
+PROC SQL;
+   CREATE TABLE WORK.WILDFIRE_01 AS
+   SELECT t1.EPISODE_ID,
+          t1.EVENT_ID,
+          t1.STATE,
+          t1.MONTH_NAME,
+          t1.EVENT_TYPE,
+          t1.CZ_TYPE,
+          t1.CZ_FIPS,
+          t1.CZ_NAME,
+          /* BEGIN_DATE */
+            (DATEPART(t1.BEGIN_DATE_TIME)) AS BEGIN_DATE,
+          /* END_DATE */
+            (DATEPART(t1.END_DATE_TIME)) AS END_DATE,
+          t1.INJURIES_DIRECT,
+          t1.INJURIES_INDIRECT,
+          t1.DEATHS_DIRECT,
+          t1.DEATHS_INDIRECT,
+          t1.DAMAGE_PROPERTY,
+          t1.DAMAGE_CROPS,
+          t2.ST_CO_ID
+      FROM EC100004.wildfire_events t1
+           LEFT JOIN WORK.NOAA_ZONES_TO_COUNTIES_02 t2 ON (t1.STATE = t2.State_Name) AND (t1.CZ_FIPS = t2.CZ_FIPS2);
+QUIT;
+
+PROC SQL;
+   CREATE TABLE WORK.WILDFIRE_02 AS
+   SELECT t2.DATES,
+          t1.EPISODE_ID,
+          t1.EVENT_ID,
+          t1.STATE,
+          t1.MONTH_NAME,
+          t1.EVENT_TYPE,
+          t1.CZ_TYPE,
+          t1.CZ_FIPS,
+          t1.CZ_NAME,
+          
+          t1.BEGIN_DATE,
+         
+           t1.END_DATE,
+          t1.INJURIES_DIRECT,
+          t1.INJURIES_INDIRECT,
+          t1.DEATHS_DIRECT,
+          t1.DEATHS_INDIRECT,
+          t1.DAMAGE_PROPERTY,
+          t1.DAMAGE_CROPS,
+          t1.ST_CO_ID
+      FROM WORK.CALZONE t2
+           LEFT JOIN WORK.WILDFIRE_01 t1 ON (t2.DATES >= t1.BEGIN_DATE) AND (t2.DATES <= t1.END_DATE);
+QUIT;
+
+PROC SQL;
+   CREATE TABLE WORK."WILDFIRE_03"n AS
+   SELECT t1.DATES,
+          t1.ST_CO_ID,
+          /* SUM_of_INJURIES_DIRECT */
+            (SUM(t1.INJURIES_DIRECT)) FORMAT=BEST3. AS SUM_of_INJURIES_DIRECT,
+          /* SUM_of_INJURIES_INDIRECT */
+            (SUM(t1.INJURIES_INDIRECT)) FORMAT=BEST1. AS SUM_of_INJURIES_INDIRECT,
+          /* SUM_of_DEATHS_DIRECT */
+            (SUM(t1.DEATHS_DIRECT)) FORMAT=BEST2. AS SUM_of_DEATHS_DIRECT,
+          /* SUM_of_DEATHS_INDIRECT */
+            (SUM(t1.DEATHS_INDIRECT)) FORMAT=BEST1. AS SUM_of_DEATHS_INDIRECT,
+          /* TARGET */
+            (case when t1.EPISODE_ID not is missing then 1 else 0 end ) AS TARGET
+      FROM WORK.WILDFIRE_02 t1
+      GROUP BY t1.DATES,
+               t1.ST_CO_ID,
+               (CALCULATED TARGET);
+QUIT;

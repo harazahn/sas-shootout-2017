@@ -1,0 +1,37 @@
+PROC SQL;
+   CREATE TABLE WORK.Weather_01 AS
+   SELECT t1.STATION_ID,
+          t1.Date,
+          t1.State,
+          t1.County,
+          t1.ST_CO_ID,
+          t1.STATION_Elevation,
+          t1.TMAX_F,
+          t1.TMIN_F,
+          t1.PRCP_in,
+          t1.SNWD_in,
+          t1.SNOW_in
+      FROM EC100002.weather_station_data t1
+	  ;
+QUIT;
+
+PROC SQL;
+   CREATE TABLE WORK.WEATHER_02 AS
+   SELECT t1.Date,
+          t1.ST_CO_ID,
+          /* MAX_of_STATION_Elevation */
+            (MAX(t1.STATION_Elevation)) AS MAX_of_STATION_Elevation,
+          /* AVG_of_TMAX_F */
+            (AVG(t1.TMAX_F)) AS AVG_of_TMAX_F,
+          /* AVG_of_TMIN_F */
+            (AVG(t1.TMIN_F)) AS AVG_of_TMIN_F,
+          /* AVG_of_PRCP_in */
+            (AVG(t1.PRCP_in)) AS AVG_of_PRCP_in,
+          /* AVG_of_SNWD_in */
+            (AVG(t1.SNWD_in)) AS AVG_of_SNWD_in,
+          /* AVG_of_SNOW_in */
+            (AVG(t1.SNOW_in)) AS AVG_of_SNOW_in
+      FROM WORK.WEATHER_01 t1
+      GROUP BY t1.Date,
+               t1.ST_CO_ID;
+QUIT;

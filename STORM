@@ -1,0 +1,111 @@
+PROC SQL;
+   CREATE TABLE WORK."STORM_DATES_01"n AS
+   SELECT t1.EPISODE_ID,
+          t1.EVENT_ID,
+          t1.STATE,
+          t1.EVENT_TYPE,
+          t1.CZ_TYPE,
+          t1.CZ_FIPS,
+          t1.CZ_NAME,
+          t1.INJURIES_DIRECT,
+          t1.INJURIES_INDIRECT,
+          t1.DEATHS_DIRECT,
+          t1.DEATHS_INDIRECT,
+          t1.DAMAGE_PROPERTY,
+          t1.DAMAGE_CROPS,
+          /* BEGIN_DAY */
+            (DAY(DATEPART(t1.BEGIN_DATE_TIME))) AS BEGIN_DAY,
+          /* BEGIN_TIME */
+            (TIMEPART(t1.BEGIN_DATE_TIME)) AS BEGIN_TIME,
+          /* END_DAY */
+            (DAY(DATEPART(t1.END_DATE_TIME))) AS END_DAY,
+          /* END_TIME */
+            (TIMEPART(t1.END_DATE_TIME)) AS END_TIME,
+          /* MONTH_NAME */
+            (MONTH(DATEPART(t1.BEGIN_DATE_TIME))) FORMAT=MONNAME9. AS MONTH_NAME,
+          /* BEGIN_DATE */
+            (DATEPART(t1.BEGIN_DATE_TIME)) AS BEGIN_DATE,
+          /* END_DATE */
+            (DATEPART(t1.END_DATE_TIME)) AS END_DATE
+      FROM EC100004.storm_events t1;
+QUIT;
+
+DATA WORK.STORM_DATES_02;
+SET STORM_DATES_01;
+MONTH_NAME1 = VVALUE(MONTH_NAME);
+RUN;
+
+PROC SQL;
+   CREATE TABLE WORK."STORM_03"n AS
+   SELECT t1.EPISODE_ID,
+          t1.EVENT_ID,
+          t1.STATE,
+          t1.EVENT_TYPE,
+          t1.CZ_TYPE,
+          t1.CZ_FIPS,
+          t1.CZ_NAME,
+          t1.INJURIES_DIRECT,
+          t1.INJURIES_INDIRECT,
+          t1.DEATHS_DIRECT,
+          t1.DEATHS_INDIRECT,
+          t1.DAMAGE_PROPERTY,
+          t1.DAMAGE_CROPS,
+          t1.BEGIN_DAY,
+          t1.BEGIN_TIME,
+          t1.END_DAY,
+          t1.END_TIME,
+          t1.MONTH_NAME,
+          t1.MONTH_NAME1,
+          t2.ST_CO_ID,
+          t1.BEGIN_DATE FORMAT=DATE7.,
+          t1.END_DATE FORMAT=DATE7.
+      FROM WORK.STORM_DATES_02 t1
+           LEFT JOIN WORK.NOAA_ZONES_TO_COUNTIES_02 t2 ON (t1.CZ_FIPS = t2.CZ_FIPS2) AND (t1.STATE = t2.State_Name);
+QUIT;
+
+PROC SQL;
+   CREATE TABLE WORK.Storm_04 AS
+   SELECT t1.DATES,
+          t2.EPISODE_ID,
+          t2.EVENT_ID,
+          t2.STATE,
+          t2.EVENT_TYPE,
+          t2.CZ_TYPE,
+          t2.CZ_FIPS,
+          t2.CZ_NAME,
+          t2.INJURIES_DIRECT,
+          t2.INJURIES_INDIRECT,
+          t2.DEATHS_DIRECT,
+          t2.DEATHS_INDIRECT,
+          t2.DAMAGE_PROPERTY,
+          t2.DAMAGE_CROPS,
+          t2.BEGIN_DAY,
+          t2.BEGIN_TIME,
+          t2.END_DAY,
+          t2.END_TIME,
+          t2.MONTH_NAME,
+          t2.MONTH_NAME1,
+          t2.ST_CO_ID,
+          t2.BEGIN_DATE,
+          t2.END_DATE
+      FROM WORK.CALZONE t1
+           LEFT JOIN WORK.STORM_03 t2 ON (t1.DATES >= t2.BEGIN_DATE) AND (t1.DATES <= t2.END_DATE);
+QUIT;
+
+PROC SQL;
+   CREATE TABLE WORK.STORM_05 AS
+   SELECT t1.DATES,
+          t1.ST_CO_ID,
+          sum(INJURIES_DIRECT) as Injury_direct,
+          Sum(INJURIES_INDIRECT) as Injury_indirect,
+          Sum(DEATHS_DIRECT) as Deaths_direct,
+          Sum(DEATHS_INDIRECT) as deaths_indirect,
+/*          sum(DAMAGE_PROPERTY) as damage_property, */
+/*          sum(DAMAGE_CROPS) as damage_crops*/
+      FROM WORK.STORM_04 t1
+		group by DATES, ST_CO_ID;
+QUIT;
+
+
+
+

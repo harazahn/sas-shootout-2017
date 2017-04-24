@@ -1,0 +1,43 @@
+PROC SQL;
+   CREATE TABLE WORK.DROUGHT_01 AS
+   SELECT t1.ST_CO_ID FORMAT=Z5.,
+          t1.county,
+          t1.state,
+          t1.NONE,
+          t1.D0_D4,
+          t1.D1_D4,
+          t1.D2_D4,
+          t1.D3_D4,
+          t1.D4,
+          t1.validStart,
+          t1.validEnd
+      FROM EC100006.drought_severity t1;
+QUIT;
+
+PROC SQL;
+   CREATE TABLE WORK.DROUGHT_02 AS
+   SELECT t2.*,
+      FROM WORK.CALZONE t1
+           LEFT JOIN WORK.DROUGHT_01 t2 ON (t1.DATES >= t2.validStart) AND (t1.DATES <= t2.validStart);
+QUIT;
+
+
+PROC SQL;
+   CREATE TABLE WORK.DROUGHT_03 AS
+   SELECT t1.ST_CO_ID,
+		  t1.Dates,
+          /* AVG_of_NONE */
+            (AVG(t1.NONE)) FORMAT=BEST5. AS AVG_of_NONE,
+          /* AVG_of_D0_D4 */
+            (AVG(t1.D0_D4)) FORMAT=BEST5. AS AVG_of_D0_D4,
+          /* AVG_of_D1_D4 */
+            (AVG(t1.D1_D4)) FORMAT=BEST5. AS AVG_of_D1_D4,
+          /* AVG_of_D2_D4 */
+            (AVG(t1.D2_D4)) FORMAT=BEST5. AS AVG_of_D2_D4,
+          /* AVG_of_D3_D4 */
+            (AVG(t1.D3_D4)) FORMAT=BEST5. AS AVG_of_D3_D4,
+          /* AVG_of_D4 */
+            (AVG(t1.D4)) FORMAT=BEST5. AS AVG_of_D4
+      FROM WORK.DROUGHT_02 t1
+      GROUP BY t1.ST_CO_ID, t1.DATES;
+QUIT;
